@@ -208,7 +208,6 @@ const Login = styled.a`
 
 const UserImg = styled.img`
   height: 100%;
-  width:50% ;
 `;
 
 const DropDown = styled.div`
