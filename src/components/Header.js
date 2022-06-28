@@ -231,6 +231,11 @@ const DropDown = styled.div`
   letter-spacing: 3px;
   width: 100px;
   opacity: 0;
+  &:hover {
+    background-color: #f9f9f9;
+    color: #000;
+    border-color: transparent;
+  }
 `;
 
 const SignOut = styled.div`
@@ -251,7 +256,7 @@ const SignOut = styled.div`
   &:hover {
     ${DropDown} {
       opacity: 1;
-      transition-duration: 1s;
+      transition-duration: 0.5s;
     }
   }
 `;
