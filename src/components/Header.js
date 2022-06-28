@@ -1,10 +1,8 @@
-import React from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
-import { auth, provider } from "../firebase";
-import { signInWithPopup , onAuthStateChanged , signOut} from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { auth, provider } from "../firebase";
 import {
   selectUserName,
   selectUserPhoto,
@@ -12,14 +10,14 @@ import {
   setSignOutState,
 } from "../feature/user/userSlice";
 
-const Header = () => {
+const Header = (props) => {
   const dispatch = useDispatch();
   const history = useNavigate();
   const userName = useSelector(selectUserName);
   const userPhoto = useSelector(selectUserPhoto);
 
   useEffect(() => {
-    onAuthStateChanged(auth , async (user) => {
+    auth.onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user);
         history("/home");
@@ -29,7 +27,8 @@ const Header = () => {
 
   const handleAuth = () => {
     if (!userName) {
-      signInWithPopup(auth, provider)
+      auth
+        .signInWithPopup(provider)
         .then((result) => {
           setUser(result.user);
         })
@@ -37,7 +36,8 @@ const Header = () => {
           alert(error.message);
         });
     } else if (userName) {
-      signOut(auth)
+      auth
+        .signOut()
         .then(() => {
           dispatch(setSignOutState());
           history("/");
@@ -55,11 +55,13 @@ const Header = () => {
       })
     );
   };
+
   return (
     <Nav>
       <Logo>
         <img src="/images/logo.svg" alt="Disney+" />
       </Logo>
+
       {!userName ? (
         <Login onClick={handleAuth}>Login</Login>
       ) : (
@@ -124,6 +126,7 @@ const Logo = styled.a`
   max-height: 70px;
   font-size: 0;
   display: inline-block;
+
   img {
     display: block;
     width: 100%;
@@ -141,17 +144,19 @@ const NavMenu = styled.div`
   position: relative;
   margin-right: auto;
   margin-left: 25px;
+
   a {
     display: flex;
     align-items: center;
     padding: 0 12px;
-    cursor: pointer;
+
     img {
       height: 20px;
       min-width: 20px;
       width: 20px;
       z-index: auto;
     }
+
     span {
       color: rgb(249, 249, 249);
       font-size: 13px;
@@ -160,6 +165,7 @@ const NavMenu = styled.div`
       padding: 2px 0px;
       white-space: nowrap;
       position: relative;
+
       &:before {
         background-color: rgb(249, 249, 249);
         border-radius: 0px 0px 4px 4px;
@@ -177,6 +183,7 @@ const NavMenu = styled.div`
         width: auto;
       }
     }
+
     &:hover {
       span:before {
         transform: scaleX(1);
@@ -185,9 +192,10 @@ const NavMenu = styled.div`
       }
     }
   }
-  @media (max-width: 768px) {
+
+  /* @media (max-width: 768px) {
     display: none;
-  }
+  } */
 `;
 
 const Login = styled.a`
@@ -198,7 +206,7 @@ const Login = styled.a`
   border: 1px solid #f9f9f9;
   border-radius: 4px;
   transition: all 0.2s ease 0s;
-  cursor: pointer;
+
   &:hover {
     background-color: #f9f9f9;
     color: #000;
@@ -223,12 +231,6 @@ const DropDown = styled.div`
   letter-spacing: 3px;
   width: 100px;
   opacity: 0;
-  visibility: hidden;
-  &:hover {
-    background-color: #f9f9f9;
-    color: #000;
-    border-color: transparent;
-  }
 `;
 
 const SignOut = styled.div`
@@ -239,16 +241,17 @@ const SignOut = styled.div`
   cursor: pointer;
   align-items: center;
   justify-content: center;
+
   ${UserImg} {
     border-radius: 50%;
     width: 100%;
     height: 100%;
   }
+
   &:hover {
     ${DropDown} {
       opacity: 1;
-      transition-duration: 0.3s;
-      visibility: visible;
+      transition-duration: 1s;
     }
   }
 `;
